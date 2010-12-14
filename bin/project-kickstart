@@ -2,9 +2,14 @@
 
 use strict;
 use warnings;
+use Config::Any;
 use Getopt::Long;
-use Locale::Maketext;
+#use Locale::Maketext;
 use Project::Kickstart;
+use Project::Kickstart::L10n;
+my $lh = Project::Kickstart::L10n->get_handle( 'en_US' );
+
+my %CONFIG;
 
 sub Usage {
   my $message = shift;
@@ -15,16 +20,55 @@ usage:	project-kickstart [options] module-name
 	-h, --help	Print this message and exit
 	-q, --quit	Quiet mode
 	-v, --verbose	Verbose output
+	--module	Module name to create
+			(required, can be specified without option)
+	--author	Author name (required, can be set in other ways)
+	--email		Author email (required, can be set in other ways)
 _EOF_
   exit defined $message ? 1 : 0;
 }
 
-my %opts;
-my $res = getOptions(
-  \%opts,
+sub debug_options {
+  for ( keys %CONFIG ) {
+    print "$_: $CONFIG{$_}\n";
+  }
+}
+
+$CONFIG{author} ||= $ENV{KICKSTART_AUTHOR};
+$CONFIG{email} ||= $ENV{KICKSTART_EMAIL};
+
+my @config_filepaths = ( $ENV{HOME}.'/.kickstartrc.ini' );
+my $cfg = Config::Any->load_files({
+  files => \@config_filepaths,
+  use_ext => 1
+});
+for my $config_file ( @$cfg ) {
+  my ( $filename, $config ) = %$config_file;
+  for my $k ( keys %$config ) {
+    $CONFIG{$k} ||= $config->{$k};
+  }
+}
+
+my %OPTS;
+my $res = GetOptions(
+  \%OPTS,
   'h|help',
   'v|verbose',
-  'q|quiet'
+  'q|quiet',
+  'author',
+  'email',
+  'module'
 );
 
-($opts{h} or $opts{help}) and Usage;
+for my $k ( qw( author email module ) ) {
+  $CONFIG{$k} ||= $OPTS{$k};
+}
+
+$CONFIG{module} ||= shift @ARGV;
+
+($OPTS{h} or $OPTS{help}) and Usage;
+$CONFIG{author} or Usage( '--author required! (see docs)' );
+$CONFIG{email} or Usage( '--email required! (see docs)' );
+$CONFIG{module} or Usage( 'No module name specified!' );
+
+debug_options;
