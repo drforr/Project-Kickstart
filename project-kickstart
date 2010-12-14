@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Locale::Maketext;
+use Project::Kickstart;
+
+sub Usage {
+  my $message = shift;
+  print $message."\n" if $message;
+  print <<'_EOF_';
+usage:	project-kickstart [options] module-name
+
+	-h, --help	Print this message and exit
+	-q, --quit	Quiet mode
+	-v, --verbose	Verbose output
+_EOF_
+  exit defined $message ? 1 : 0;
+}
+
+my %opts;
+my $res = getOptions(
+  \%opts,
+  'h|help',
+  'v|verbose',
+  'q|quiet'
+);
+
+($opts{h} or $opts{help}) and Usage;
