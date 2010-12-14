@@ -14,7 +14,7 @@ my %CONFIG;
 sub Usage {
   my $message = shift;
   print $message."\n" if $message;
-  print <<'_EOF_';
+  print $lh->maketext( <<'_EOF_' );
 usage:	project-kickstart [options] module-name
 
 	-h, --help	Print this message and exit
@@ -67,8 +67,8 @@ for my $k ( qw( author email module ) ) {
 $CONFIG{module} ||= shift @ARGV;
 
 ($OPTS{h} or $OPTS{help}) and Usage;
-$CONFIG{author} or Usage( '--author required! (see docs)' );
-$CONFIG{email} or Usage( '--email required! (see docs)' );
+$CONFIG{author} or Usage( $lh->maketext( '--author required! (see docs)' ) );
+$CONFIG{email} or Usage( $lh->maketext( '--email required! (see docs)' ) );
 $CONFIG{module} or Usage( $lh->maketext( 'No module name specified!' ) );
 
 debug_options;
