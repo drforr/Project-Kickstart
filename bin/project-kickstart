@@ -4,10 +4,10 @@ use strict;
 use warnings;
 use Config::Any;
 use Getopt::Long;
-#use Locale::Maketext;
 use Project::Kickstart;
 use Project::Kickstart::L10n;
-my $lh = Project::Kickstart::L10n->get_handle( 'en_US' );
+
+my $lh = Project::Kickstart::L10n->get_handle( 'en_us' ) || die "No language specified!\n";
 
 my %CONFIG;
 
@@ -69,6 +69,6 @@ $CONFIG{module} ||= shift @ARGV;
 ($OPTS{h} or $OPTS{help}) and Usage;
 $CONFIG{author} or Usage( '--author required! (see docs)' );
 $CONFIG{email} or Usage( '--email required! (see docs)' );
-$CONFIG{module} or Usage( 'No module name specified!' );
+$CONFIG{module} or Usage( $lh->maketext( 'No module name specified!' ) );
 
 debug_options;
