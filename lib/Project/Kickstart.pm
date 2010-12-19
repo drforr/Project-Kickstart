@@ -24,12 +24,6 @@ _EOF_
   exit defined $message ? 1 : 0;
 }
 
-sub config {
-  my $self = shift;
-  my $config = shift;
-  $self->config( $config );
-}
-
 sub add {
   my $self = shift;
   my $args = shift;
@@ -75,28 +69,55 @@ sub _get_module_names {
   return @modules;
 }
 
+sub _write_templates {
+  my $self = shift;
+  my $config = shift;
+}
+
+
 sub create {
   my $self = shift;
   my $args = shift;
   my @modules = $self->_get_module_names( $args );
 
   @modules or
-    $self->Usage( $self->lh->maketext( "At least one module name required!" ) );
+    $self->Usage( $self->lh->maketext( q{At least one module name required!} ) );
+
+  for my $module ( @modules ) {
+    $module =~ s{\.pm$}{};
+    my $canonical_perl_name = $module;
+    $module =~ s{\::}{-}g;
+    my $canonical_name = $module;
+    my @path = split /-/, $module;
+    my $file = pop @path;
+
+    my %config = (
+      author => $self->config->{author},
+      email => $self->config->{email},
+      canonical_perl_name => $canonical_perl_name,
+      canonical_name => $canonical_name,
+      module_name => $module,
+      directory => join( '/', @path ),
+      file => $file
+    );
+
+    $self->write_templates( \%config );
+  }
 }
 
 sub delete {
   my $self = shift;
-  my @args = shift;
+  my $args = shift;
 }
 
 sub init {
   my $self = shift;
-  my @args = shift;
+  my $args = shift;
 }
 
 sub rebuild_l10n {
   my $self = shift;
-  my @args = shift;
+  my $args = shift;
 }
 
 no Moose;

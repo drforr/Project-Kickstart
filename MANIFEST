@@ -2,6 +2,7 @@ Changes
 MANIFEST
 Makefile.PL
 README
+bin/project-kickstart
 lib/Project/Kickstart.pm
 lib/Project/Kickstart/L10n.pm
 lib/Project/Kickstart/L10n/en_us.pm
