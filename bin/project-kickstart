@@ -3,30 +3,17 @@
 use strict;
 use warnings;
 use Config::Any;
-use Getopt::Long;
 use Project::Kickstart;
 use Project::Kickstart::L10n;
 
-my $lh = Project::Kickstart::L10n->get_handle( 'en_us' ) || die "No language specified!\n";
+our $VERSION = 0.01;
+
+my $lh = Project::Kickstart::L10n->get_handle( 'en_us' ) ||
+  die "No language specified!\n";
+my $pk = Project::Kickstart->new;
+$pk->lh( $lh );
 
 my %CONFIG;
-
-sub Usage {
-  my $message = shift;
-  print $message."\n" if $message;
-  print $lh->maketext( <<'_EOF_' );
-usage:	project-kickstart [options] module-name
-
-	-h, --help	Print this message and exit
-	-q, --quit	Quiet mode
-	-v, --verbose	Verbose output
-	--module	Module name to create
-			(required, can be specified without option)
-	--author	Author name (required, can be set in other ways)
-	--email		Author email (required, can be set in other ways)
-_EOF_
-  exit defined $message ? 1 : 0;
-}
 
 sub debug_options {
   for ( keys %CONFIG ) {
@@ -38,10 +25,10 @@ $CONFIG{author} ||= $ENV{KICKSTART_AUTHOR};
 $CONFIG{email} ||= $ENV{KICKSTART_EMAIL};
 
 my @config_filepaths = ( $ENV{HOME}.'/.kickstartrc.ini' );
-my $cfg = Config::Any->load_files({
+my $cfg = Config::Any->load_files( {
   files => \@config_filepaths,
   use_ext => 1
-});
+} );
 for my $config_file ( @$cfg ) {
   my ( $filename, $config ) = %$config_file;
   for my $k ( keys %$config ) {
@@ -49,26 +36,50 @@ for my $config_file ( @$cfg ) {
   }
 }
 
-my %OPTS;
-my $res = GetOptions(
-  \%OPTS,
-  'h|help',
-  'v|verbose',
-  'q|quiet',
-  'author',
-  'email',
-  'module'
-);
+# Eat common options until we come to something without the leading dash.
+# This will modify @ARGV, just like Getopt::Long.
+#
+while ( $ARGV[0] =~ /^-/ ) {
+  my $option = shift @ARGV;
+  if ( $option eq '-h' or $option eq '--help' ) {
+    $pk->Usage;
+  }
+  elsif ( $option eq '-v' or $option eq '--version' ) {
+    $pk->Usage( $lh->maketext( "Version: [_1]", $VERSION ) );
+  }
 
-for my $k ( qw( author email module ) ) {
-  $CONFIG{$k} ||= $OPTS{$k};
+  if ( $option eq '--verbose' ) {
+    $CONFIG{verbose} = 1;
+  }
+  elsif ( $option eq '-q' or $option eq '--quiet' ) {
+    $CONFIG{quiet} = 1;
+  }
 }
 
-$CONFIG{module} ||= shift @ARGV;
+# Done with generic options, now get the mode to operate in.
+#
+$pk->Usage unless @ARGV;
 
-($OPTS{h} or $OPTS{help}) and Usage;
-$CONFIG{author} or Usage( $lh->maketext( '--author required! (see docs)' ) );
-$CONFIG{email} or Usage( $lh->maketext( '--email required! (see docs)' ) );
-$CONFIG{module} or Usage( $lh->maketext( 'No module name specified!' ) );
+my $mode = shift @ARGV;
+$pk->config(\%CONFIG);
+
+my %mode_map = (
+  add => sub { $pk->add( \@ARGV ) },
+  create => sub { $pk->create( \@ARGV ) },
+  delete => sub { $pk->delete( \@ARGV ) },
+  init => sub { $pk->init( \@ARGV ) },
+  'rebuild-l10n' => sub { $pk->rebuild_l10n( \@ARGV ) },
+);
+$mode_map{rm} = $mode_map{delete};
+
+if( exists $mode_map{$mode} ) {
+  $mode_map{$mode}->();
+}
+else {
+  $pk->Usage( $lh->maketext( "Unknown mode '[_1]'", $mode ) );
+}
 
 debug_options;
+
+my $pks = Project::Kickstart->new;
+$pks->init(\%CONFIG);

@@ -3,6 +3,8 @@ MANIFEST
 Makefile.PL
 README
 lib/Project/Kickstart.pm
+lib/Project/Kickstart/L10n.pm
+lib/Project/Kickstart/L10n/en_us.pm
 t/00-load.t
 t/01-base.t
 t/manifest.t

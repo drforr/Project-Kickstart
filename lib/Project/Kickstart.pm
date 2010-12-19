@@ -1,110 +1,103 @@
 package Project::Kickstart;
+use Moose;
 
-use warnings;
-use strict;
-
-=head1 NAME
-
-Project::Kickstart - The great new Project::Kickstart!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
+has config => ( is => 'rw', isa => 'HashRef' );
+has lh => ( is => 'rw' );
 
 our $VERSION = '0.01';
 
+sub Usage {
+  my $self = shift;
+  my $message = shift;
+  print $message."\n" if $message;
+  print $self->lh->maketext( <<'_EOF_' );
+usage:	project-kickstart ~[-h~] ~[--help~] ~[-q~] ~[--quiet~] ~[--verbose~] ~[-v~]
+			~[--version~] <command> ~[args~]
 
-=head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use Project::Kickstart;
-
-    my $foo = Project::Kickstart->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=cut
-
-sub function1 {
+Commands are:
+  add		Add a file to an existing module
+  create	Create a new module
+  delete	Delete a file from the current module
+  init		Initialize the project-kickstarter repository
+  rebuild-l10n	Rebuild the localization database from existing code
+_EOF_
+  exit defined $message ? 1 : 0;
 }
 
-=head2 function2
-
-=cut
-
-sub function2 {
+sub config {
+  my $self = shift;
+  my $config = shift;
+  $self->config( $config );
 }
 
-=head1 AUTHOR
+sub add {
+  my $self = shift;
+  my $args = shift;
+  my @filenames;
 
-Jeff Goff, C<< <jgoff at cpan.org> >>
+  while ( my $arg = shift @$args ) {
+next if $arg =~ /^-/;
+    push @filenames, $arg;
+  }
+}
 
-=head1 BUGS
+sub _get_module_names {
+  my $self = shift;
+  my $args = shift;
+  my @modules;
 
-Please report any bugs or feature requests to C<bug-project-kickstart at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Project-Kickstart>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+  while ( my $arg = shift @$args ) {
+    if ( $arg eq '--module' or $arg eq '-m' ) {
+      $arg = shift @$args;
+      push @modules, $arg;
+    }
+    elsif ( $arg eq '--author' or $arg eq '-a' ) {
+      $arg = shift @$args;
+      $self->config->{email} = $arg;
+    }
+    elsif ( $arg eq '--email' or $arg eq '-e' ) {
+      $arg = shift @$args;
+      if ( $arg !~ /[@]/ ) {
+        $self->Usage(
+          $self->lh->maketext( q{Email '[_1]' does not have a '@'!}, $arg )
+        );
+      }
+      $self->config->{email} = $arg;
+    }
+  }
 
+  if ( @$args ) {
+    unless( $self->config->{quiet} ) {
+      print $self->lh->maketext( q{Ignoring unknown arguments '[_1]'}, @$args );
+    }
+  }
 
+  return @modules;
+}
 
+sub create {
+  my $self = shift;
+  my $args = shift;
+  my @modules = $self->_get_module_names( $args );
 
-=head1 SUPPORT
+  @modules or
+    $self->Usage( $self->lh->maketext( "At least one module name required!" ) );
+}
 
-You can find documentation for this module with the perldoc command.
+sub delete {
+  my $self = shift;
+  my @args = shift;
+}
 
-    perldoc Project::Kickstart
+sub init {
+  my $self = shift;
+  my @args = shift;
+}
 
+sub rebuild_l10n {
+  my $self = shift;
+  my @args = shift;
+}
 
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Project-Kickstart>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Project-Kickstart>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Project-Kickstart>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Project-Kickstart/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2010 Jeff Goff.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-
-
-=cut
-
-1; # End of Project::Kickstart
+no Moose;
+__PACKAGE__->meta->make_immutable;
