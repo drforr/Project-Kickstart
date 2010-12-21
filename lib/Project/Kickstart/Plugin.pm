@@ -32,6 +32,13 @@ This class method must return the ASCII description that will appear in the
 
 =cut
 
+=item help
+
+This class method returns the help text that will appear for
+C<project-kickstart help your-module>.
+
+=cut
+
 =item init
 
 This object method is called with your plugin parameters. Please note that you

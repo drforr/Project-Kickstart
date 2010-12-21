@@ -8,6 +8,11 @@ our $VERSION = '0.01';
 
 sub name { 'create' }
 sub description { 'Create new module(s)' }
+sub help { <<'_EOF_' }
+usage: project-kickstart create <module-names>
+
+  Create module names
+_EOF_
 
 # Parses the remainder of @ARGV for 'project-kickstart add' and returns the
 # module names it finds.

@@ -2,15 +2,12 @@
 
 use strict;
 use warnings;
-use Config::Any;
 use Project::Kickstart;
 
 our $VERSION = 0.01;
 
 my $pk = Project::Kickstart->new;
-$pk->init( \@ARGV ); # Modifies @ARGV...
-
-$pk->Usage unless @ARGV;
+$pk->init( \@ARGV );
 
 my $mode = shift @ARGV;
 

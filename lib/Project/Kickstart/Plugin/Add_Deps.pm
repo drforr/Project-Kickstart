@@ -1,16 +1,20 @@
-package Project::Kickstart::Plugin::Delete;
+package Project::Kickstart::Plugin::Add_Deps;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
+has filenames => ( is => 'rw' );
+
 our $VERSION = '0.01';
 
-sub name { 'delete' }
-sub description { 'Delete file(s) from the current module' }
-sub help { <<'_EOF_' }
-usage: project-kickstart delete <files>
+sub name { 'add-deps' }
+sub description { 'Add dependencies to Makefile.PL' }
 
-  Delete files from module and repository
+sub help { <<'_EOF_' }
+usage: project-kickstart add-deps
+
+  Add module dependencies to Makefile.PL.
 _EOF_
+
 
 sub init {
   my $self = shift;
@@ -20,7 +24,6 @@ sub init {
 
 sub act {
   my $self = shift;
-  my ( $args ) = @_;
 }
 
 no Moose;

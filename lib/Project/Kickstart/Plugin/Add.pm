@@ -9,6 +9,14 @@ our $VERSION = '0.01';
 sub name { 'add' }
 sub description { 'Add a file to an existing module' }
 
+sub help { <<'_EOF_' }
+usage: project-kickstart add ~[--no-renumber~] <files>
+
+  Add file(s) to the project repository.
+
+	--no-renumber	Do not renumber test files
+_EOF_
+
 sub init {
   my $self = shift;
   my ( $args ) = @_;

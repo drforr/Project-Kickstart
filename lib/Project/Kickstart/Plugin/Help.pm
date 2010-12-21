@@ -1,15 +1,15 @@
-package Project::Kickstart::Plugin::RebuildL10n;
+package Project::Kickstart::Plugin::Help;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
 our $VERSION = '0.01';
 
-sub name { 'rebuild-l10n' }
-sub description { 'Rebuild localization hash from existing code' }
+sub name { 'help' }
+sub description { 'Display help for modules' }
 sub help { <<'_EOF_' }
-usage: project-kickstart rebuild-l10n
+usage: project-kickstart help
 
-  Rebuild English localization strings for this application
+  Print this help message. Maybe you wanted 'project-kickstart help'?
 _EOF_
 
 sub init {
