@@ -23,6 +23,12 @@ sub init {
 sub act {
   my $self = shift;
   my ( $args ) = @_;
+  unless ( -e 'Makefile.PL' or -e 'Build.PL' ) {
+    print $self->maketext(
+            q{project-kickstart add: No Makefile.PL or Build.PL found!}
+          ) . "\n";
+    return 0;
+  }
 }
 
 no Moose;

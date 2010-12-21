@@ -4,6 +4,11 @@ use Moose;
 has config => ( is => 'rw', isa => 'HashRef' );
 has lh => ( is => 'rw' );
 
+sub maketext {
+  my $self = shift;
+  return $self->lh->maketext( @_ );
+}
+
 =pod
 
 All Project::Kickstart plugins should be a subclass of this plugin class.

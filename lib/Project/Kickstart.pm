@@ -1,4 +1,5 @@
 package Project::Kickstart;
+
 use List::Util qw(max);
 use Module::Pluggable require => 1;
 use Project::Kickstart::L10n;
@@ -108,17 +109,16 @@ sub run_plugin {
 
   if ( $mode eq 'help' ) {
     my $module = shift @$args;
-  print $self->maketext( $self->plugin->{$module}{module}->help );
-#    print $self->maketext( $module->help );
-    exit 0;
+    print $self->maketext( $self->plugin->{$module}{module}->help );
   }
-
-  my $p = $self->plugin->{$mode}{module}->new;
-  $p->config( $self->config );
-  $p->lh( $self->lh );
-  $p->init( $args )
-    or die $self->maketext( q{Init for mode '[_1]' failed!}, $mode ) . "\n";
-  $p->act;
+  else {
+    my $p = $self->plugin->{$mode}{module}->new;
+    $p->config( $self->config );
+    $p->lh( $self->lh );
+    $p->init( $args )
+      or die $self->maketext( q{Init for mode '[_1]' failed!}, $mode ) . "\n";
+    $p->act;
+  }
 }
 
 no Moose;

@@ -39,7 +39,25 @@ sub init {
 
 sub act {
   my $self = shift;
-use YAML;die "Filenames" .Dump($self->filenames);
+  my %extension = (
+    't' => sub { my $filename = shift; warn "Adding test file '$filename'\n" },
+    'pm' => sub { my $filename = shift; warn "Adding module '$filename'\n" },
+    '_binary_' => sub { my $filename = shift; warn "Adding binary '$filename'\n" },
+  );
+
+  for my $filename ( @{$self->filenames} ) {
+    if ( $filename =~ /\.([^.]+)$/ ) {
+      if ( $extension{$1} ) {
+        $extension{$1}->($filename);
+      }
+      else {
+warn "Don't know how to handle extension '.$1' for '$filename!\n";
+      }
+    }
+    else {
+      $extension{_binary_}->($filename);
+    }
+  }
 }
 
 no Moose;
