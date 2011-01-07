@@ -1,5 +1,11 @@
 #!/usr/bin/perl
 
+=head1 NAME
+
+project-kickstart - Project maintenance tool
+
+=cut
+
 use strict;
 use warnings;
 use Project::Kickstart;
@@ -12,3 +18,122 @@ $pk->init( \@ARGV );
 my $mode = shift @ARGV;
 
 $pk->run_plugin( $mode, \@ARGV );
+
+=head1 SYNOPSIS
+
+project-kickstart [options] <command> [options]
+
+Options:
+
+    --help	Display help message
+    --quiet	Display only fatal errors
+    --verbose	Display all messages, warnings and errors
+    --version	Display the current build number
+
+Default commands are:
+
+    add               Add files to project
+    add-deps          Search for and add dependencies
+    create            Create project
+    delete            Delete files from project (alias: rm)
+    help              Display help message
+    init              Initialize the project-kickstart repository
+    init-environment  Initialize the environment
+    rebuild-l10n      Rebuild L10n files from existing maketext calls
+    rename            Rename files in project
+
+Other commands may be available locally, run C<project-kickstart help> for a
+complete list.
+
+Example:
+
+    project-kickstart add t/01_core.t
+
+=head1 DESCRIPTION
+
+Keeping a perl project up-to-date can be a significant challenge. This tool
+integrates with your existing project and git repository (SVN and CVS later on)
+to help keep all of your project metadata in sync.
+
+It uses Git-style commands, so if you're familiar with file manipulation in Git,
+you should be able to adapt to C<project-kickstart> easily. For instance, if you
+want to add a library file, C<project-kickstart add My::Module::Plugin> will
+do the trick.
+
+It creates C<lib/My/Module/Plugin.pm> from a template, adding C<Module/> if the
+directory doesn't exist. It also adds it to C<MANIFEST> and performs C<git add>
+on the filename so it doesn't get lost.
+
+Adding a test file will invoke even more magic, if your test files happen to
+be numbered sequentially. You can add C<t/02-core.t> and it will renumber the
+original C<t/02-base.t> through C<t/11-format.t> out of the way, do the
+appropriate C<git rename> commands and update the C<MANIFEST> as well.
+
+Other commands will use L<PPI> to scour your library directories for modules
+that you forgot to add to C<Makefile.PL>, or (if you use L<Locale::Maketext> in
+the recommended way) update your English-language localization files with the
+latest translations.
+
+=head1 CONFIGURATION
+
+You can configure C<project-kickstart> in several ways. The first, and the
+recommended way, is to use the git-like command
+C<project-kickstart global user.email="me@example.com"> to set the basic
+parameters such as C<user.name> and C<user.email> that you can then use for
+C<project-kickstart create My::Module>.
+
+The second way is to set C<KICKSTART_EMAIL> and C<KICKSTART_AUTHOR> in your
+environment beforehand. Finally, you can use the command-line parameters
+C<--author> and C<--email> to set the module author and email address. Of course
+the easiest thing to do is set up configuration once and not worry about it
+afterward.
+
+=head1 USAGES
+
+=head2 add file(s)
+
+Add files to a project.
+
+=head2 add-deps
+
+Add dependencies to Makefile.PL automatically
+
+=head2 create Project::Name or Project-Name
+
+Create a project
+
+=head2 delete file(s)
+
+Delete files from the current project. This automates several steps for you:
+
+If the file should be in the MANIFEST, it deletes the reference to it. It also
+runs C<git rm $file> on it to make sure it's deleted from the repository. Any
+empty directories are unlinked as well, for good measure.
+
+Files like '02-foo.t' are given more care. In this case, any test files that
+are higher in sequence, like '03-bar.t', are individually renumbered down to
+fill the gap vacated by the original file, and the appropriate C<git mv>
+commands are issued.
+
+=head2 help
+
+Display help message
+
+=head2 init
+
+Init repository, also initializes git repository if that hasn't been done.
+
+=head2 init-environment
+
+Init the working environment, mainly.
+
+=head2 rebuild-l10n
+
+Go through the lib/ directories for maketext() calls, add strings to L10n
+hashes.
+
+=head2 rename
+
+Rename file from <src> to <dst>, perform usual magic
+
+=cut

@@ -48,17 +48,25 @@ sub configure {
     if $ENV{KICKSTART_EMAIL} and $ENV{KICKSTART_EMAIL} ne '';
 
   $self->Usage unless @$argv;
-  if ( $ENV{HOME} and -e $ENV{HOME}.'/.kickstartrc.ini' ) {
-    my @config_filepaths = ( $ENV{HOME}.'/.kickstartrc.ini' );
-    my $cfg = Config::Any->load_files( {
-      files => \@config_filepaths,
-      use_ext => 1
-    } );
-    for my $config_file ( @$cfg ) {
-      my ( $filename, $config ) = %$config_file;
-      for my $k ( keys %$config ) {
-        $config{$k} ||= $config->{$k};
-      }
+  my $kickstart_file = 'config.ini';
+  my $kickstart_path = '.kickstart';
+
+  my @config_filepaths = (
+    $ENV{HOME} . '/' . $kickstart_path . '/' . $kickstart_file;
+  );
+  if ( $ENV{KICKSTART_CONFIG_DIR} ) {
+    unshift @config_filepaths,
+      $ENV{KICKSTART_CONFIG_DIR} . '/' . $kickstart_fiie;
+  }
+  
+  my $cfg = Config::Any->load_files( {
+    files => \@config_filepaths,
+    use_ext => 1
+  } );
+  for my $config_file ( @$cfg ) {
+    my ( $filename, $config ) = %$config_file;
+    for my $k ( keys %$config ) {
+      $config{$k} ||= $config->{$k};
     }
   }
 

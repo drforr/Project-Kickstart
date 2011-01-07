@@ -1,4 +1,4 @@
-package Project::Kickstart::Plugin::Add;
+package Project::Kickstart::Plugin::Mv;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -6,13 +6,13 @@ has filenames => ( is => 'rw' );
 
 our $VERSION = '0.01';
 
-sub name { 'add' }
-sub description { 'Add a file to an existing module' }
+sub name { 'rename' }
+sub description { 'Rename a file in an existing module' }
 
 sub help { <<'_EOF_' }
-usage: project-kickstart add ~[--no-renumber~] <files>
+usage: project-kickstart rename ~[--no-renumber~] <src> <dest>
 
-  Add file(s) to the project repository.
+  Rename file from <src> to <dest>
 
 	--no-renumber	Do not renumber test files
 _EOF_
@@ -42,9 +42,9 @@ sub act {
   my $manifest = Project::Kickstart::Manifest->new;
   $manifest->init( 'MANIFEST' );
   my %extension = (
-    't' => sub { my $filename = shift; warn "Adding test file '$filename'\n" },
-    'pm' => sub { my $filename = shift; warn "Adding module '$filename'\n" },
-    '_binary_' => sub { my $filename = shift; warn "Adding binary '$filename'\n" },
+    't' => sub { my $filename = shift; warn "Renaming test file '$filename'\n" },
+    'pm' => sub { my $filename = shift; warn "Renaming module '$filename'\n" },
+    '_binary_' => sub { my $filename = shift; warn "Renaming binary '$filename'\n" },
   );
 
   for my $filename ( @{$self->filenames} ) {

@@ -62,6 +62,14 @@ usage: project-kickstart init-environment ~[--no-profile~]
 	--no-profile	Do not edit .bashrc/.zshrc/.sh scripts
 _EOF_
 
+my $usage_rename = <<'_EOF_';
+usage: project-kickstart rename ~[--no-renumber~] <src> <dest>
+
+  Rename file from <src> to <dest>
+
+	--no-renumber	Do not renumber test files
+_EOF_
+
 %Lexicon = (
   $usage => $usage,
   $usage_add => $usage_add,
@@ -69,6 +77,7 @@ _EOF_
   $usage_delete => $usage_delete,
   $usage_help => $usage_help,
   $usage_rebuild_l10n => $usage_rebuild_l10n,
+  $usage_rename => $usage_rename,
 
   q{Version: [_1]} =>
     q{Version: [_1]},

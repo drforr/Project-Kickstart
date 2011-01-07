@@ -15,6 +15,7 @@ lib/Project/Kickstart/Plugin/Init_Environment.pm
 lib/Project/Kickstart/Plugin/RebuildL10n.pm
 lib/Project/Kickstart/L10n.pm
 lib/Project/Kickstart/L10n/en_us.pm
+lib/Project/Kickstart/Utilities.pm
 t/00-load.t
 t/01-base.t
 t/manifest.t
