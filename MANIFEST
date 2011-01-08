@@ -7,11 +7,11 @@ lib/Project/Kickstart.pm
 lib/Project/Kickstart/Plugin.pm
 lib/Project/Kickstart/Plugin/Add.pm
 lib/Project/Kickstart/Plugin/Add_Deps.pm
-lib/Project/Kickstart/Plugin/Create.pm
 lib/Project/Kickstart/Plugin/Delete.pm
+lib/Project/Kickstart/Plugin/Global.pm
 lib/Project/Kickstart/Plugin/Help.pm
 lib/Project/Kickstart/Plugin/Init.pm
-lib/Project/Kickstart/Plugin/Init_Environment.pm
+lib/Project/Kickstart/Plugin/Mv.pm
 lib/Project/Kickstart/Plugin/RebuildL10n.pm
 lib/Project/Kickstart/L10n.pm
 lib/Project/Kickstart/L10n/en_us.pm

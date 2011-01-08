@@ -34,11 +34,10 @@ Default commands are:
 
     add               Add files to project
     add-deps          Search for and add dependencies
-    create            Create project
     delete            Delete files from project (alias: rm)
+    global            Set up project-kickstart globals
     help              Display help message
-    init              Initialize the project-kickstart repository
-    init-environment  Initialize the environment
+    init              Initialize module repository
     rebuild-l10n      Rebuild L10n files from existing maketext calls
     rename            Rename files in project
 
@@ -90,50 +89,28 @@ afterward.
 
 =head1 USAGES
 
-=head2 add file(s)
+=head2 add 01-core.t My/Module.pm My::Module::Plugin
 
-Add files to a project.
+Add files to the current project repository.
 
 =head2 add-deps
 
-Add dependencies to Makefile.PL automatically
+Add module dependencies to Makefile.PL
 
-=head2 create Project::Name or Project-Name
+=head2 create
 
 Create a project
 
-=head2 delete file(s)
-
-Delete files from the current project. This automates several steps for you:
-
-If the file should be in the MANIFEST, it deletes the reference to it. It also
-runs C<git rm $file> on it to make sure it's deleted from the repository. Any
-empty directories are unlinked as well, for good measure.
-
-Files like '02-foo.t' are given more care. In this case, any test files that
-are higher in sequence, like '03-bar.t', are individually renumbered down to
-fill the gap vacated by the original file, and the appropriate C<git mv>
-commands are issued.
+=head2 delete
 
 =head2 help
 
-Display help message
-
 =head2 init
-
-Init repository, also initializes git repository if that hasn't been done.
 
 =head2 init-environment
 
-Init the working environment, mainly.
-
 =head2 rebuild-l10n
 
-Go through the lib/ directories for maketext() calls, add strings to L10n
-hashes.
-
 =head2 rename
-
-Rename file from <src> to <dst>, perform usual magic
 
 =cut

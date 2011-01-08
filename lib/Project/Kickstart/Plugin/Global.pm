@@ -1,4 +1,4 @@
-package Project::Kickstart::Plugin::Init_Environment;
+package Project::Kickstart::Plugin::Global;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -6,15 +6,13 @@ has filenames => ( is => 'rw' );
 
 our $VERSION = '0.01';
 
-sub name { 'init-environment' }
-sub description { 'Set up your project-kickstart environment' }
+sub name { 'global' }
+sub description { 'Set up project-kickstart globals' }
 
 sub help { <<'_EOF_' }
-usage: project-kickstart init-environment ~[--no-profile~]
+usage: project-kickstart global
 
-  Initialize your work environment,
-
-	--no-profile	Do not edit .bashrc/.zshrc/.sh scripts
+  Set up project-kickstart globals
 _EOF_
 
 sub init {
@@ -23,7 +21,7 @@ sub init {
   $self->config( { renumber => 1 } );
   $self->filenames( [] );
   my %action = (
-    '--no-renumber' => sub { $self->config->{renumber} = undef },
+#    '--no-renumber' => sub { $self->config->{renumber} = undef },
   );
 
   while ( my $arg = shift @$args ) {
