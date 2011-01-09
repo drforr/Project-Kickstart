@@ -1,4 +1,4 @@
-package Project::Kickstart::Plugin::Global;
+package Project::Kickstart::Plugin::Config;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -6,13 +6,13 @@ has filenames => ( is => 'rw' );
 
 our $VERSION = '0.01';
 
-sub name { 'global' }
-sub description { 'Set up project-kickstart globals' }
+sub name { 'config' }
+sub description { 'Configure project-kickstart globals' }
 
 sub help { <<'_EOF_' }
-usage: project-kickstart global
+usage: project-kickstart config
 
-  Set up project-kickstart globals
+  Configure project-kickstart globals
 _EOF_
 
 sub init {

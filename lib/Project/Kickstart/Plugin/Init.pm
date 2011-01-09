@@ -7,7 +7,7 @@ has modules => ( is => 'rw' );
 our $VERSION = '0.01';
 
 sub name { 'init' }
-sub description { 'Init module repository' }
+sub description { 'Init the module repository' }
 sub help { <<'_EOF_' }
 usage: project-kickstart init <module-names>
 

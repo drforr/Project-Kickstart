@@ -22,16 +22,16 @@ usage: project-kickstart add-deps
   Add module dependencies to Makefile.PL.
 _EOF_
 
+my $usage_config = <<'_EOF_';
+usage: project-kickstart config
+
+  Configure project-kickstart globals
+_EOF_
+
 my $usage_delete = <<'_EOF_';
 usage: project-kickstart delete <files>
 
   Delete files from module and repository
-_EOF_
-
-my $usage_global = <<'_EOF_';
-usage: project-kickstart global
-
-  Set up project-kickstart globals
 _EOF_
 
 my $usage_help = <<'_EOF_';
@@ -41,9 +41,17 @@ usage: project-kickstart help
 _EOF_
 
 my $usage_init = <<'_EOF_';
-usage: project-kickstart init
+usage: project-kickstart init <module-name>
 
   Init module repository
+_EOF_
+
+my $usage_rename = <<'_EOF_';
+usage: project-kickstart rename ~[--no-renumber~] <src> <dest>
+
+  Rename file from <src> to <dest>
+
+	--no-renumber	Do not renumber test files
 _EOF_
 
 my $usage_rebuild_l10n = <<'_EOF_';
@@ -64,8 +72,8 @@ _EOF_
   $usage => $usage,
   $usage_add => $usage_add,
   $usage_add_deps => $usage_add_deps,
+  $usage_config => $usage_config,
   $usage_delete => $usage_delete,
-  $usage_global => $usage_global,
   $usage_help => $usage_help,
   $usage_init => $usage_init,
   $usage_rebuild_l10n => $usage_rebuild_l10n,
@@ -101,12 +109,16 @@ _EOF_
     q{Add a file to an existing module},
   q{Add dependencies to Makefile.PL} =>
     q{Add dependencies to Makefile.PL},
+  q{Configure project-kickstart globals} =>
+    q{Configure project-kickstart globals},
   q{Delete file(s) from the current module} =>
     q{Delete file(s) from the current module},
-  q{Initialize the project-kickstart repository} =>
-    q{Initialize the project-kickstart repository},
-  q{Init module repository} =>
-    q{Init module repository},
+  q{Display help for modules},
+    q{Display help for modules} =>
+  q{Init the module repository} =>
+    q{Init the module repository},
+  q{Rename a file in an existing module} =>
+    q{Rename a file in an existing module},
   q{Rebuild localization hash from existing code},
     q{Rebuild localization hash from existing code} =>
 );
