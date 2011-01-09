@@ -6,11 +6,11 @@ has filenames => ( is => 'rw' );
 
 our $VERSION = '0.01';
 
-sub name { 'rename' }
+sub name { 'mv' }
 sub description { 'Rename a file in an existing module' }
 
 sub help { <<'_EOF_' }
-usage: project-kickstart rename ~[--no-renumber~] <src> <dest>
+usage: project-kickstart mv ~[--no-renumber~] <src> <dest>
 
   Rename file from <src> to <dest>
 
@@ -23,6 +23,7 @@ sub init {
   $self->config( { renumber => 1 } );
   $self->filenames( [] );
   my %action = (
+    '-h' => sub { print $self->help; exit 0 },
     '--no-renumber' => sub { $self->config->{renumber} = undef },
   );
 

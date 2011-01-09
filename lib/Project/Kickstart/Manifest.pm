@@ -59,7 +59,7 @@ sub sort {
       for my $idx ( 0 .. $max ) {
         return $a->[$idx] cmp $b->[$idx] if ( $a->[$idx] cmp $b->[$idx] ) != 0;
       }
-    } map { [ split '/', $_ ] keys %seen
+    } map { [ split '/', $_ ] } keys %seen
   ] );
 }
 

@@ -61,6 +61,18 @@ sub _write_templates {
 sub init {
   my $self = shift;
   my ( $args ) = @_;
+  my %action = (
+    '-h' => sub { print $self->help; exit 0 },
+  );
+
+  while ( my $arg = shift @$args ) {
+    if ( $action{$arg} ) {
+      $action{$arg}->();
+    }
+    else {
+      push @{$self->filenames}, $arg;
+    }
+  }
   $self->modules( [ $self->_get_module_names( $args ) ] );
   return 1;
 }

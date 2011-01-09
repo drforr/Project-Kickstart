@@ -15,6 +15,18 @@ _EOF_
 sub init {
   my $self = shift;
   my ( $args ) = @_;
+  my %action = (
+    '-h' => sub { print $self->help; exit 0 },
+  );
+
+  while ( my $arg = shift @$args ) {
+    if ( $action{$arg} ) {
+      $action{$arg}->();
+    }
+    else {
+      push @{$self->filenames}, $arg;
+    }
+  }
   return 1;
 }
 

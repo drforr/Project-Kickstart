@@ -117,7 +117,7 @@ sub run_plugin {
 
   if ( $mode eq 'help' ) {
     my $module = shift @$args;
-    print $self->maketext( $self->plugin->{$module}{module}->help );
+    print $self->maketext( $self->plugin->{help}{module}->help );
   }
   else {
     my $p = $self->plugin->{$mode}{module}->new;

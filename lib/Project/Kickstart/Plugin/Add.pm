@@ -1,4 +1,5 @@
 package Project::Kickstart::Plugin::Add;
+use Project::Kickstart::Manifest;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -23,6 +24,7 @@ sub init {
   $self->config( { renumber => 1 } );
   $self->filenames( [] );
   my %action = (
+    '-h' => sub { print $self->help; exit 0 },
     '--no-renumber' => sub { $self->config->{renumber} = undef },
   );
 

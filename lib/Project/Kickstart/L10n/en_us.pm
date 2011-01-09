@@ -46,22 +46,14 @@ usage: project-kickstart init <module-name>
   Init module repository
 _EOF_
 
-my $usage_rename = <<'_EOF_';
-usage: project-kickstart rename ~[--no-renumber~] <src> <dest>
-
-  Rename file from <src> to <dest>
-
-	--no-renumber	Do not renumber test files
-_EOF_
-
 my $usage_rebuild_l10n = <<'_EOF_';
 usage: project-kickstart rebuild-l10n
 
   Rebuild English localization strings for this application
 _EOF_
 
-my $usage_rename = <<'_EOF_';
-usage: project-kickstart rename ~[--no-renumber~] <src> <dest>
+my $usage_mv = <<'_EOF_';
+usage: project-kickstart mv ~[--no-renumber~] <src> <dest>
 
   Rename file from <src> to <dest>
 
@@ -76,8 +68,8 @@ _EOF_
   $usage_delete => $usage_delete,
   $usage_help => $usage_help,
   $usage_init => $usage_init,
+  $usage_mv => $usage_mv,
   $usage_rebuild_l10n => $usage_rebuild_l10n,
-  $usage_rename => $usage_rename,
 
   q{Version: [_1]} =>
     q{Version: [_1]},
