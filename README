@@ -1,16 +1,14 @@
 Project-Kickstart
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+Moving files around in your perl project can be a tricky business. It's not so
+much the 'mv' command as forgetting to tell git that the repository's changed,
+updating the MANIFEST or having to continually shuffle t/03-foo.t around.
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
-
+project-kickstart will help you with that. Instead of 'mv t/03-foo.t t/05-foo.t'
+and doing the whole 'git mv' after the fact, just type
+'project-kickstart mv 03-foo.t 05-foo.t'. This will do the actual 'mv' command,
+run 'git mv' on the repository, update MANIFEST and shuffle around the other
+t/ files to keep the existing files in order.
 
 INSTALLATION
 
@@ -27,6 +25,14 @@ After installing, you can find documentation for this module with the
 perldoc command.
 
     perldoc Project::Kickstart
+
+Really you should just be using the binary, so:
+
+    perldoc project-kickstart
+
+or
+
+    project-kickstart help
 
 You can also look for information at:
 
