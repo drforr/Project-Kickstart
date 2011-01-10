@@ -2,8 +2,8 @@ package Project::Kickstart;
 
 use List::Util qw(max);
 use Module::Pluggable require => 1;
+use Project::Kickstart::Config_File;
 use Project::Kickstart::L10n;
-use Config::Any;
 use Moose;
 
 has config => ( is => 'rw' );
@@ -45,35 +45,16 @@ sub init {
 sub configure {
   my $self = shift;
   my ( $argv ) = @_;
-  my %config;
-
-  $config{author} = $ENV{KICKSTART_AUTHOR}
-    if $ENV{KICKSTART_AUTHOR} and $ENV{KICKSTART_AUTHOR} ne '';
-  $config{email} = $ENV{KICKSTART_EMAIL}
-    if $ENV{KICKSTART_EMAIL} and $ENV{KICKSTART_EMAIL} ne '';
-
   $self->Usage unless @$argv;
-  my $kickstart_path = '.kickstart';
-  my $kickstart_file = 'config.ini';
 
-  my @config_filepaths = (
-    $ENV{HOME} . '/' . $kickstart_path . '/' . $kickstart_file
-  );
-  if ( $ENV{KICKSTART_CONFIG_DIR} ) {
-    unshift @config_filepaths,
-      $ENV{KICKSTART_CONFIG_DIR} . '/' . $kickstart_file;
-  }
-  
-  my $cfg = Config::Any->load_files( {
-    files => \@config_filepaths,
-    use_ext => 1
-  } );
-  for my $config_file ( @$cfg ) {
-    my ( $filename, $config ) = %$config_file;
-    for my $k ( keys %$config ) {
-      $config{$k} ||= $config->{$k};
-    }
-  }
+  my $config_obj = Project::Kickstart::Config_File->new;
+  $config_obj->init;
+  $self->config( $config_obj->config );
+
+  $self->config->{user}{name} = $ENV{KICKSTART_AUTHOR}
+    if $ENV{KICKSTART_AUTHOR} and $ENV{KICKSTART_AUTHOR} ne '';
+  $self->config->{user}{email} = $ENV{KICKSTART_EMAIL}
+    if $ENV{KICKSTART_EMAIL} and $ENV{KICKSTART_EMAIL} ne '';
 
   while ( @$argv and $argv->[0] =~ /^-/ ) {
     my $arg = shift @$argv;
@@ -82,10 +63,9 @@ sub configure {
     $self->Usage(
       $self->maketext( q{Version: [_1]}, $VERSION )
     ) if $arg eq '-v' or $arg eq '--version';
-    $config{verbose} = 1 if $arg eq '--verbose';
-    $config{quiet} = 1 if $arg eq '-q' or $arg eq '--quiet';
+    $self->config->{verbose} = 1 if $arg eq '--verbose';
+    $self->config->{quiet} = 1 if $arg eq '-q' or $arg eq '--quiet';
   }
-  $self->config( \%config );
 }
 
 sub _print_plugins {

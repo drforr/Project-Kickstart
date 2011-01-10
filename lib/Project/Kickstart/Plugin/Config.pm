@@ -1,5 +1,6 @@
 package Project::Kickstart::Plugin::Config;
 use Getopt::Long;
+use Project::Kickstart::Config_File;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -26,6 +27,14 @@ sub init {
   );
 
   $help and do { print $self->help; exit 0 };
+
+  my ( $section, $key ) = split /\./, $global[0];
+  my $value = $global[1];
+
+  my $config = Project::Kickstart::Config_File->new;
+  $config->init;
+  $config->config->{$section}{$key} = $value;
+  $config->write;
 
   return 1;
 }

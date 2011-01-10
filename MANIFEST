@@ -4,6 +4,7 @@ Makefile.PL
 README
 bin/project-kickstart
 lib/Project/Kickstart.pm
+lib/Project/Kickstart/Config.pm
 lib/Project/Kickstart/Plugin.pm
 lib/Project/Kickstart/Plugin/Add.pm
 lib/Project/Kickstart/Plugin/Add_Deps.pm

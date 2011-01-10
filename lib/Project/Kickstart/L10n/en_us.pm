@@ -81,6 +81,8 @@ _EOF_
 #
   q{Unknown mode '[_1]'!} =>
     q{Unknown mode '[_1]'!},
+  q{Could not write to '[_1]': [_2]!} =>
+    q{Could not write to '[_1]': [_2]!},
   q{Email '[_1]' does not have a '@'!} =>
     q{Email '[_1]' does not have a '@'!},
   q{At least one module name required!} =>
