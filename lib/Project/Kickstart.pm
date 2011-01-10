@@ -30,6 +30,11 @@ sub init {
     my $name = $plugin->name;
     my $description = $plugin->description;
     $reg{$name} = { description => $description, module => $plugin };
+    if ( $plugin->can( 'alias' ) ) {
+      for my $alias ( $plugin->alias ) {
+        $reg{$alias} = { description => $description, module => $plugin };
+      }
+    }
   }
   $self->plugin( \%reg );
   $self->configure( $argv );
@@ -117,15 +122,24 @@ sub run_plugin {
 
   if ( $mode eq 'help' ) {
     my $module = shift @$args;
-    print $self->maketext( $self->plugin->{help}{module}->help );
+    if ( $module and $self->plugin->{$module} ) {
+      print $self->maketext( $self->plugin->{$module}{module}->help );
+    }
+    else {
+      print $self->maketext( $self->plugin->{help}{module}->help );
+    }
   }
   else {
     my $p = $self->plugin->{$mode}{module}->new;
     $p->config( $self->config );
     $p->lh( $self->lh );
-    $p->init( $args )
-      or die $self->maketext( q{Init for mode '[_1]' failed!}, $mode ) . "\n";
-    $p->act;
+    if ( $p->can( 'init' ) ) {
+      $p->init( $args )
+        or die $self->maketext( q{Init for mode '[_1]' failed!}, $mode ) . "\n";
+    }
+
+    $p->act
+      if $p->can( 'act' );
   }
 }
 

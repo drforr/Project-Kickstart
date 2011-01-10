@@ -1,5 +1,6 @@
 package Project::Kickstart::Plugin::Add;
 use Project::Kickstart::Manifest;
+use Getopt::Long;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -21,21 +22,20 @@ _EOF_
 sub init {
   my $self = shift;
   my ( $args ) = @_;
-  $self->config( { renumber => 1 } );
-  $self->filenames( [] );
-  my %action = (
-    '-h' => sub { print $self->help; exit 0 },
-    '--no-renumber' => sub { $self->config->{renumber} = undef },
+  my ( $help, $no_renumber );
+  my $res = GetOptions(
+    'h|help' => \$help,
+    'no-renumber' => \$no_renumber,
   );
 
-  while ( my $arg = shift @$args ) {
-    if ( $action{$arg} ) {
-      $action{$arg}->();
-    }
-    else {
-      push @{$self->filenames}, $arg;
-    }
-  }
+  $self->config( { renumber => 1 } );
+  $self->filenames( [] );
+
+  $help and do { print $self->help; exit 0 };
+  $no_renumber and do { $self->config->{renumber} = undef };
+
+  push @{$self->filenames}, @ARGV;
+
   return 1;
 }
 

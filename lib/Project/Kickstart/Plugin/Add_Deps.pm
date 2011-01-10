@@ -1,4 +1,5 @@
 package Project::Kickstart::Plugin::Add_Deps;
+use Getopt::Long;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -15,22 +16,18 @@ usage: project-kickstart add-deps
   Add module dependencies to Makefile.PL.
 _EOF_
 
-
 sub init {
   my $self = shift;
   my ( $args ) = @_;
-  my %action = (
-    '-h' => sub { print $self->help; exit 0 },
+  my $help;
+  my $res = GetOptions(
+    'h|help' => \$help,
   );
 
-  while ( my $arg = shift @$args ) {
-    if ( $action{$arg} ) {
-      $action{$arg}->();
-    }
-    else {
-      push @{$self->filenames}, $arg;
-    }
-  }
+  $help and do { print $self->help; exit 0 };
+
+  push @{$self->filename}, @ARGV;
+
   return 1;
 }
 

@@ -1,4 +1,5 @@
 package Project::Kickstart::Plugin::RebuildL10n;
+use Getopt::Long;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -15,18 +16,15 @@ _EOF_
 sub init {
   my $self = shift;
   my ( $args ) = @_;
-  my %action = (
-    '-h' => sub { print $self->help; exit 0 },
+  my $help;
+  my $res = GetOptions(
+    'h|help' => \$help
   );
 
-  while ( my $arg = shift @$args ) {
-    if ( $action{$arg} ) {
-      $action{$arg}->();
-    }
-    else {
-      push @{$self->filenames}, $arg;
-    }
-  }
+  $help and do { print $self->help; exit 0 };
+
+  push @{$self->filenames}, @ARGV;
+
   return 1;
 }
 

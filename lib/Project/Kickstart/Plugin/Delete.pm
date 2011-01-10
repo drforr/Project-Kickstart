@@ -1,9 +1,11 @@
 package Project::Kickstart::Plugin::Delete;
+use Getopt::Long;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
 our $VERSION = '0.01';
 
+sub alias { 'rm' }
 sub name { 'delete' }
 sub description { 'Delete file(s) from the current module' }
 sub help { <<'_EOF_' }
@@ -15,18 +17,15 @@ _EOF_
 sub init {
   my $self = shift;
   my ( $args ) = @_;
-  my %action = (
-    '-h' => sub { print $self->help; exit 0 },
+  my $help;
+  my $res = GetOptions(
+    'h|help' => \$help,
   );
 
-  while ( my $arg = shift @$args ) {
-    if ( $action{$arg} ) {
-      $action{$arg}->();
-    }
-    else {
-      push @{$self->filenames}, $arg;
-    }
-  }
+  $help and do { print $self->help; exit 0 };
+
+  push @{$self->filenames}, @ARGV;
+
   return 1;
 }
 

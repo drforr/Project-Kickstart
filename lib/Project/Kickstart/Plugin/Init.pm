@@ -1,4 +1,5 @@
 package Project::Kickstart::Plugin::Init;
+use Getopt::Long;
 use Moose;
 extends 'Project::Kickstart::Plugin';
 
@@ -14,45 +15,6 @@ usage: project-kickstart init <module-names>
   Init module repository
 _EOF_
 
-# Parses the remainder of @ARGV for 'project-kickstart init' and returns the
-# module names it finds.
-#
-sub _get_module_names {
-  my $self = shift;
-  my ( $args ) = @_;
-  my @modules;
-
-  my %action = (
-    '--module' => sub { push @modules, shift @$args },
-    '--author' => sub { $self->config->{email} = shift @$args },
-    '--email' => sub {
-      my $arg = shift @$args;
-      if ( $arg !~ /[@]/ ) {
-        $self->Usage(
-          $self->lh->maketext( q{Email '[_1]' does not have a '@'!}, $arg )
-        );
-      }
-      $self->config->{email} = $arg;
-    }
-  );
-
-  while ( my $arg = shift @$args ) {
-    if ( $action{$arg} ) {
-      $action{$arg}->();
-    }
-    elsif ( $arg =~ /^-/ ) {
-      $self->Usage(
-        $self->lh->maketext( q{Module name '[_1]' with leading hyphen!}, $arg )
-      );
-    }
-    else {
-      push @modules, $arg;
-    }
-  }
-
-  return @modules;
-}
-
 sub _write_templates {
   my $self = shift;
   my ( $config ) = @_;
@@ -61,19 +23,27 @@ sub _write_templates {
 sub init {
   my $self = shift;
   my ( $args ) = @_;
-  my %action = (
-    '-h' => sub { print $self->help; exit 0 },
+  my ( $help, @module, $author, $email );
+  my $res = GetOptions(
+    'h|help' => \$help,
+    'module=s{,}' => \@module,
+    'author=s' => \$author,
+    'email=s' => \$email,
   );
 
-  while ( my $arg = shift @$args ) {
-    if ( $action{$arg} ) {
-      $action{$arg}->();
-    }
-    else {
-      push @{$self->filenames}, $arg;
-    }
+  $help and do { print $self->help; exit 0 };
+  $author and do { $self->config->{author} = $author };
+  if ( $email =~ /[@]/ ) {
+    $self->Usage(
+      $self->lh->maketext( q{Email '[_1]' does not have a '@'!}, $email )
+    );
   }
-  $self->modules( [ $self->_get_module_names( $args ) ] );
+  else {
+    $self->config->{email} = $email;
+  }
+
+  $self->modules( [ @module ] );
+
   return 1;
 }
 

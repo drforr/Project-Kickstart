@@ -23,9 +23,11 @@ usage: project-kickstart add-deps
 _EOF_
 
 my $usage_config = <<'_EOF_';
-usage: project-kickstart config
+usage: project-kickstart config ~[--global~]
 
   Configure project-kickstart globals
+
+	--global	Set a global property
 _EOF_
 
 my $usage_delete = <<'_EOF_';
@@ -41,7 +43,7 @@ usage: project-kickstart help
 _EOF_
 
 my $usage_init = <<'_EOF_';
-usage: project-kickstart init <module-name>
+usage: project-kickstart init <module-names>
 
   Init module repository
 _EOF_
