@@ -6,6 +6,8 @@ extends 'Project::Kickstart::Plugin';
 
 our $VERSION = '0.01';
 
+has global => ( is => 'rw' );
+
 sub name { 'config' }
 sub description { 'Configure project-kickstart globals' }
 
@@ -28,19 +30,27 @@ sub init {
 
   $help and do { print $self->help; exit 0 };
 
-  my ( $section, $key ) = split /\./, $global[0];
-  my $value = $global[1];
-
-  my $config = Project::Kickstart::Config_File->new;
-  $config->init;
-  $config->config->{$section}{$key} = $value;
-  $config->write;
+  if ( @global ) {
+    $self->global( { $global[0] => $global[1] } );
+  }
 
   return 1;
 }
 
 sub act {
   my $self = shift;
+  my $config = Project::Kickstart::Config_File->new;
+  $config->init;
+
+  if ( $self->global ) {
+    for my $k ( keys %{$self->global} ) {
+      my ( $section, $key ) = split /\./, $k;
+      my $value = $self->global->{$k};
+
+      $config->config->{$section}{$key} = $value;
+    }
+    $config->write;
+  }
 }
 
 no Moose;

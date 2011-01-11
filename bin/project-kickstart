@@ -34,8 +34,8 @@ Default commands are:
 
     add               Add files to project
     add-deps          Search for and add dependencies
+    config            Set configuration variables
     delete            Delete files from project (alias: rm)
-    global            Set up project-kickstart globals
     help              Display help message
     init              Initialize module repository
     rebuild-l10n      Rebuild L10n files from existing maketext calls
